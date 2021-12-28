@@ -1,8 +1,8 @@
 import { SmileOutlined, UserAddOutlined } from '@ant-design/icons/lib/icons';
 import { Alert, Avatar, Button, Form, Input, Tooltip } from 'antd';
-import Picker from 'emoji-picker-react';
 import React from 'react';
 import { useChat } from '../../../features/chat';
+import { Reactions } from '../../Reactions';
 import Message from '../Message';
 import * as S from './styles';
 
@@ -61,21 +61,21 @@ export const ChatWindow = () => {
               {messages.map((message) => (
                 <Message
                   key={message.id}
+                  id={message.id}
                   text={message.text}
                   photoUrl={message.photoURL ?? ''}
                   displayName={message.displayName}
                   createAt={message.createdAt}
                   userId={message.uid}
+                  reactions={message.reactions}
                 />
               ))}
             </S.MessageList>
             <S.FormStyled form={form}>
               {showEmojiPicker && (
-                <Picker
+                <Reactions
                   onEmojiClick={onEmojiClick}
-                  disableSearchBar
-                  disableSkinTonePicker
-                  pickerStyle={{
+                  styles={{
                     position: 'absolute',
                     width: '100%',
                     height: '270px',

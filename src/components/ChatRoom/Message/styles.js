@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  margin: 10px 0;
+  position: relative;
+
   padding: 3px 0px;
 
   display: flex;
@@ -19,29 +20,40 @@ const Wrapper = styled.div`
 
   .reaction {
     position: absolute;
-    top: -45px;
-    right: ${(props) => (props.authAuthor ? 0 : 'unset')};
+    top: -100%;
+    left: ${(props) => (props.authAuthor ? '24%' : 'unset')};
+    right: ${(props) => (props.authAuthor ? 'unset' : '22%')};
     z-index: 1;
+
+    &__list {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      width: 50%;
+      justify-content: ${(props) =>
+        props.authAuthor ? ' flex-end' : ' flex-start'};
+    }
+
+    &__icon {
+      background: white;
+      padding: 2px 5px;
+    }
 
     .emoji-categories {
       display: none;
-    }
-
-    .emoji-group {
-      &::before {
-        display: none;
-      }
     }
   }
 
   .action {
     &__box {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      transition: all 0.15s ease;
+      width: 72px;
+
+      order: ${(props) => (props.authAuthor ? '-1' : 'unset')};
+      transform: ${(props) => (props.authAuthor ? 'unset' : 'scaleX(-1)')};
+
       opacity: 0;
       visibility: hidden;
+      transition: all 0.15s ease;
 
       .ant-btn-icon-only {
         border-radius: 100%;
@@ -50,25 +62,66 @@ const Wrapper = styled.div`
   }
 
   .content {
-    margin-left: 25px;
-    padding: 8px 12px;
-    border-radius: 14px;
+    padding: 6px 12px;
+    border-radius: 18px;
     color: ${(props) => (props.authAuthor ? 'white' : '#050505')};
     background: ${(props) => (props.authAuthor ? '#3e85ff' : '#e5e6eb')};
+    cursor: pointer;
 
-    &__box {
-      position: relative;
-      transition: all 0.3s ease;
+    &__info {
+      display: flex;
+      align-items: center;
+      margin-bottom: -16px;
+      transition: all 0.25s ease;
+
+      &--js {
+        margin-bottom: 0;
+      }
 
       &:hover {
-        margin-bottom: 25px;
-
         .action__box {
-          bottom: -28px;
           opacity: 1;
           visibility: visible;
         }
       }
+
+      &--box {
+        display: flex;
+        flex-direction: column;
+        align-items: ${(props) =>
+          props.authAuthor ? 'flex-end' : 'flex-start'};
+      }
+    }
+
+    &__box {
+      display: flex;
+      align-items: center;
+
+      position: relative;
+    }
+
+    &__date {
+      display: flex;
+      flex-direction: column;
+      align-items: ${(props) => (props.authAuthor ? 'flex-end' : 'flex-start')};
+      margin-left: ${(props) => (props.authAuthor ? 0 : '22px')};
+
+      position: relative;
+    }
+  }
+
+  .date {
+    font-size: 12px;
+    transition: all 0.25s;
+    width: max-content;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+
+    &--js {
+      opacity: 1;
+      visibility: visible;
     }
   }
 `;

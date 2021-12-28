@@ -50,6 +50,7 @@ export const useChat = () => {
       photoURL,
       roomId: selectedRoom.id,
       displayName,
+      reactions: [],
     });
 
     // reset input

@@ -64,9 +64,20 @@ const Input = styled.div`
 `;
 
 const MessageList = styled.div`
+  height: 100%;
   max-height: 100%;
   padding-right: 15px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export {
