@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { useFirestore } from '../features/common';
+import { db } from '../firebase';
 import { AuthContext } from './AuthProvider';
 
 export const AppContext = createContext();
@@ -8,6 +9,7 @@ const AppProvider = ({ children }) => {
   const [isAddRoomVisible, setIsAddRoomVisible] = useState(false);
   const [isInviteMemberVisible, setIsInviteMemberVisible] = useState(false);
   const [selectedRoomId, setSelectedRoomId] = useState('');
+  const [replyMessageId, setReplyMessageId] = useState('');
 
   const {
     user: { uid },
@@ -38,18 +40,24 @@ const AppProvider = ({ children }) => {
 
   const members = useFirestore('users', usersCondition);
 
+  const replyMessageRef = replyMessageId
+    ? db.collection('messages').doc(replyMessageId)
+    : null;
+
   return (
     <AppContext.Provider
       value={{
         rooms,
         members,
         isAddRoomVisible,
-        setIsAddRoomVisible,
         selectedRoomId,
-        setSelectedRoomId,
         selectedRoom,
         isInviteMemberVisible,
+        replyMessageRef,
+        setIsAddRoomVisible,
+        setSelectedRoomId,
         setIsInviteMemberVisible,
+        setReplyMessageId,
       }}
     >
       {children}

@@ -66,17 +66,42 @@ const Input = styled.div`
 const MessageList = styled.div`
   height: 100%;
   max-height: 100%;
-  padding-right: 15px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
 
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 
   &::-webkit-scrollbar {
     display: none;
+  }
+`;
+
+const ReplyBox = styled.div`
+  height: 80px;
+  border-top: 1px solid #ced0d4;
+  margin-left: -11px;
+  margin-right: -11px;
+  position: relative;
+
+  .icon-close {
+    position: absolute;
+    right: 8px;
+    top: 5px;
+  }
+
+  .reply-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 11px;
+    margin-top: 10px;
+  }
+
+  .reply-text {
+    font-size: 13px;
+    width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -88,4 +113,5 @@ export {
   FormStyled,
   Wrapper,
   Input,
+  ReplyBox,
 };

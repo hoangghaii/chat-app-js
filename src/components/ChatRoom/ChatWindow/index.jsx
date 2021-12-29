@@ -1,5 +1,9 @@
-import { SmileOutlined, UserAddOutlined } from '@ant-design/icons/lib/icons';
-import { Alert, Avatar, Button, Form, Input, Tooltip } from 'antd';
+import {
+  CloseOutlined,
+  SmileOutlined,
+  UserAddOutlined,
+} from '@ant-design/icons/lib/icons';
+import { Alert, Avatar, Button, Form, Input, Tooltip, Typography } from 'antd';
 import React from 'react';
 import { useChat } from '../../../features/chat';
 import { Reactions } from '../../Reactions';
@@ -8,6 +12,7 @@ import * as S from './styles';
 
 const { Group } = Avatar;
 const { Item } = Form;
+const { Text } = Typography;
 
 export const ChatWindow = () => {
   const {
@@ -20,10 +25,12 @@ export const ChatWindow = () => {
     message,
     messages,
     showEmojiPicker,
+    replyMessage,
     onEmojiClick,
     handleShowEmojiPicker,
     handleOnChange,
     handleOnSubmit,
+    handleCloseReply,
   } = useChat();
 
   return (
@@ -59,18 +66,28 @@ export const ChatWindow = () => {
           <S.Content>
             <S.MessageList ref={messageListRef}>
               {messages.map((message) => (
-                <Message
-                  key={message.id}
-                  id={message.id}
-                  text={message.text}
-                  photoUrl={message.photoURL ?? ''}
-                  displayName={message.displayName}
-                  createAt={message.createdAt}
-                  userId={message.uid}
-                  reactions={message.reactions}
-                />
+                <Message key={message.id} message={message} />
               ))}
             </S.MessageList>
+            {replyMessage && (
+              <S.ReplyBox>
+                <Button
+                  className="icon-close"
+                  icon={<CloseOutlined />}
+                  type="text"
+                  size="small"
+                  onClick={handleCloseReply}
+                />
+                <div className="reply-info">
+                  <Text>
+                    Reply for <b>{replyMessage.user}</b>
+                  </Text>
+                  <Text type="secondary" className="reply-text">
+                    {replyMessage.message}
+                  </Text>
+                </div>
+              </S.ReplyBox>
+            )}
             <S.FormStyled form={form}>
               {showEmojiPicker && (
                 <Reactions

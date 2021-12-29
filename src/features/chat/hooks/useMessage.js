@@ -1,29 +1,35 @@
-import { useEffect, useState } from 'react';
+import { message } from 'antd';
+import { useContext, useEffect, useState } from 'react';
+import { AppContext, AuthContext } from '../../../Context';
 import { db } from '../../../firebase';
 
-export const useChatAction = ({ id, reactions }) => {
+export const useMessage = ({ id, reactions, replyFor }) => {
   const [showReaction, setShowReaction] = useState(false);
   const [contentInfoClassName, setContentInfoClassName] =
     useState('content__info');
   const [dateClassName, setDateClassName] = useState('date');
   const [reactionsList, setReactionsList] = useState([]);
-  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+  const [replyMessage, setReplyMessage] = useState();
+
+  const {
+    user: { displayName },
+  } = useContext(AuthContext);
+
+  const { setReplyMessageId } = useContext(AppContext);
 
   const handleShowReaction = () => {
     setShowReaction(!showReaction);
   };
 
-  const handleChatModal = () => {
-    setIsOpenDeleteModal(!isOpenDeleteModal);
-  };
-
   const handleDeleleChat = () => {
     const messageRef = db.collection('messages').doc(id);
     messageRef.delete();
+    message.success('Deleted');
   };
 
-  //TODO: handle function reply
-  const handleReply = () => {};
+  const handleReply = () => {
+    setReplyMessageId(id);
+  };
 
   const onSelectReaction = (_event, emojiObject) => {
     const emoji = emojiObject.emoji;
@@ -43,6 +49,25 @@ export const useChatAction = ({ id, reactions }) => {
       : setDateClassName('date');
   };
 
+  const getReplyMessage = (replyMessageId) => {
+    const replyMessageRef = replyMessageId
+      ? db.collection('messages').doc(replyMessageId)
+      : null;
+
+    replyMessageRef.get().then((doc) => {
+      const docData = doc.data();
+      setReplyMessage({
+        user: docData.displayName === displayName ? 'you' : docData.displayName,
+        message: docData.text,
+      });
+    });
+  };
+
+  useEffect(() => {
+    replyFor && getReplyMessage(replyFor);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [replyFor]);
+
   useEffect(() => {
     const counts = {};
 
@@ -61,12 +86,11 @@ export const useChatAction = ({ id, reactions }) => {
     contentInfoClassName,
     dateClassName,
     reactionsList,
-    isOpenDeleteModal,
+    replyMessage,
     handleShowReaction,
     onSelectReaction,
     handleShowDate,
     handleDeleleChat,
-    handleChatModal,
     handleReply,
   };
 };

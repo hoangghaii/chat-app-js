@@ -62,6 +62,7 @@ const Wrapper = styled.div`
   }
 
   .content {
+    max-width: 230px;
     padding: 6px 12px;
     border-radius: 18px;
     color: ${(props) => (props.authAuthor ? 'white' : '#050505')};
@@ -126,4 +127,42 @@ const Wrapper = styled.div`
   }
 `;
 
-export { Wrapper };
+const ReplyBox = styled.div`
+  position: relative;
+  top: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .reply-user__box {
+    display: flex;
+    align-items: center;
+
+    span {
+      color: #8a8d91;
+    }
+
+    .anticon {
+      margin-right: 4px;
+      font-size: 11px;
+    }
+
+    .ant-typography {
+      font-size: 12px;
+    }
+  }
+
+  .reply-text {
+    color: #65676b;
+    background: #f6f9fa;
+    border-radius: 20px;
+    padding: 6px 14px 12px 14px;
+    font-size: 13px;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
+export { Wrapper, ReplyBox };

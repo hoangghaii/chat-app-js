@@ -3,44 +3,45 @@ import {
   RollbackOutlined,
   SmileOutlined,
 } from '@ant-design/icons/lib/icons';
-import { Avatar, Button, Typography } from 'antd';
+import { Avatar, Button, Popconfirm, Typography } from 'antd';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { AuthContext } from '../../../Context';
-import { useChatAction } from '../../../features/chat';
+import { useMessage } from '../../../features/chat';
 import { formatDate } from '../../../features/common';
-import { DeleteMessageModal } from '../../Modals/DeleteMessageModal';
 import { Reactions } from '../../Reactions';
 import * as S from './styles';
 
 const { Text } = Typography;
 
-const Message = ({
-  id,
-  text,
-  displayName,
-  createAt,
-  photoUrl,
-  userId,
-  reactions,
-}) => {
+const Message = ({ message }) => {
   const {
     user: { uid },
   } = useContext(AuthContext);
+
+  const {
+    id,
+    text,
+    displayName,
+    createdAt,
+    photoUrl,
+    uid: userId,
+    reactions,
+    replyFor,
+  } = message;
 
   const {
     showReaction,
     contentInfoClassName,
     dateClassName,
     reactionsList,
-    isOpenDeleteModal,
+    replyMessage,
     handleShowReaction,
     onSelectReaction,
     handleShowDate,
     handleDeleleChat,
-    handleChatModal,
     handleReply,
-  } = useChatAction({ id, reactions });
+  } = useMessage({ id, reactions, replyFor });
 
   return (
     <>
@@ -53,6 +54,17 @@ const Message = ({
             <Text className="author">{displayName}</Text>
           </div>
         )}
+        {replyMessage && (
+          <S.ReplyBox>
+            <div className="reply-user__box">
+              <RollbackOutlined />
+              <Text>Reply for {replyMessage.user}</Text>
+            </div>
+            <Text type="secondary" className="reply-text">
+              {replyMessage.message}
+            </Text>
+          </S.ReplyBox>
+        )}
         <div className="content__box">
           <div className="content__date">
             <div className="content__info--box">
@@ -61,12 +73,18 @@ const Message = ({
                   {text}
                 </Text>
                 <div className="action__box">
-                  <Button
-                    icon={<DeleteOutlined />}
-                    type="text"
-                    size="small"
-                    onClick={handleChatModal}
-                  />
+                  <Popconfirm
+                    title="Are you sure to delete this task?"
+                    onConfirm={handleDeleleChat}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button
+                      icon={<DeleteOutlined />}
+                      type="text"
+                      size="small"
+                    />
+                  </Popconfirm>
                   <Button
                     icon={<RollbackOutlined />}
                     type="text"
@@ -82,7 +100,7 @@ const Message = ({
                 </div>
               </div>
               <Text className={dateClassName}>
-                {formatDate(createAt?.seconds)}
+                {formatDate(createdAt?.seconds)}
               </Text>
             </div>
             <div className="reaction__list">
@@ -106,23 +124,12 @@ const Message = ({
           )}
         </div>
       </S.Wrapper>
-      <DeleteMessageModal
-        isOpenDeleteModal={isOpenDeleteModal}
-        handleDeleleChat={handleDeleleChat}
-        handleChatModal={handleChatModal}
-      />
     </>
   );
 };
 
 Message.propTypes = {
-  id: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
-  displayName: PropTypes.string.isRequired,
-  createAt: PropTypes.object,
-  photoUrl: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired,
-  reactions: PropTypes.array,
+  message: PropTypes.object.isRequired,
 };
 
 export default Message;
